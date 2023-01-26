@@ -1,4 +1,8 @@
 class Problem < ApplicationRecord
+
+  has_many :user_problem_likes
+  has_many :users, through: :user_problem_likes
+
   validates :title, presence: true, uniqueness: { case_sensitive: false }
   validates :description, presence: true
   validates :test_cases, presence: true

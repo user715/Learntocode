@@ -7,3 +7,9 @@
   <li>difficultSolved : <%= @user.difficultSolved %></li>
   <li>Total_problems_solved : <%= @user.easysolved+@user.mediumSolved+@user.difficultSolved %></li>
 </ul>
+
+<ul>
+<% @problems.each do |problem|%>
+  <li> <%= problem.title %> </li>
+<% end %>
+</ul>

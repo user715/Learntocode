@@ -1,21 +1,11 @@
 <h1 class="text-center mt-4">Listing all problems</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>title</th>
-      <th>tag</th>
-      <th>likes</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @problems.each do |problem| %>
-      <tr>
-        <td><%= problem.title %></td>
-        <td><%= problem.tag_id %></td>
-        <td><%= problem.likes %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<div class="container">
+  <% @problems.each do |problem| %>
+    <div class="row justify-content-center">
+      <div class="col-2"><%= problem.title %></div>
+      <div class="col-2"><%= problem.tag_id %></div>
+      <div class="col-2"><%= problem.likes %></div>
+      <div class="col-2"><i class="fa fa-star-o"></i></div>
+    </div>
+  <% end %>
+</div>

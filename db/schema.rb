@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_26_131741) do
+ActiveRecord::Schema.define(version: 2023_01_26_180027) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
@@ -31,6 +31,11 @@ ActiveRecord::Schema.define(version: 2023_01_26_131741) do
   create_table "tags", force: :cascade do |t|
     t.string "tagname"
     t.integer "problem_count", default: 0
+  end
+
+  create_table "user_problem_likes", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "problem_id"
   end
 
   create_table "users", force: :cascade do |t|
