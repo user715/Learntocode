@@ -1,0 +1,25 @@
+<table>
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Easy</th>
+      <th>Medium</th>
+      <th>Difficult</th>
+      <th>Total_problems_solved</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.username %></td>
+        <td><%= user.email %></td>
+        <td><%= user.easysolved %></td>
+        <td><%= user.mediumSolved %></td>
+        <td><%= user.difficultSolved %></td>
+        <td><%= user.easysolved+user.mediumSolved+user.difficultSolved %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

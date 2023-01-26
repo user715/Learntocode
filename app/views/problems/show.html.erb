@@ -1,0 +1,2 @@
+<h1><%= @problem.title %></h1>
+<%= link_to "DELETE", problem_path(@problem.id),method: :delete,  data: {confirm: "Are you sure?"}, class: "outline" %>
