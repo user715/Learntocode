@@ -5,7 +5,13 @@
       <div class="col-2"><%= problem.title %></div>
       <div class="col-2"><%= problem.tag_id %></div>
       <div class="col-2"><%= problem.likes %></div>
-      <div class="col-2"><i class="fa fa-star-o"></i></div>
+      <div class="col-2">
+        <% if logged_in? && current_user.problems.exists?(problem.id) %>
+          <%= link_to "", like_path(id: problem), method: :create, class: "fa fa-star" %>
+        <% else %>
+          <%= link_to "", like_path(id: problem), method: :create, class: "fa fa-star-o" %>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div>

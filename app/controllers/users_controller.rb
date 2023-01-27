@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
 
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_action :require_user, only: [:edit, :update]
+  before_action :require_user, only: [:edit, :update, :toggle_like]
   before_action :require_same_user, only: [:edit, :update, :destroy]
 
   def show
@@ -44,6 +44,19 @@ class UsersController < ApplicationController
     session[:user_id] = nil if @user == current_user
     flash[:notice] = "Account and all associated articles successfully deleted"
     redirect_to users_path
+  end
+
+  def toggle_like
+    @problem = Problem.find(params[:id])
+    if current_user.problems.exists?(@problem.id)
+      current_user.problems.delete(@problem)
+      @problem.likes -= 1
+    else
+      current_user.problems << @problem
+      @problem.likes += 1
+    end
+    @problem.save
+    redirect_to problems_path
   end
 
   private
