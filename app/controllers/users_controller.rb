@@ -40,8 +40,12 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user.destroy
+    current_user.problems.each do |problem|
+      problem.likes -= 1
+      problem.save
+    end
     session[:user_id] = nil if @user == current_user
+    @user.destroy
     flash[:notice] = "Account and all associated articles successfully deleted"
     redirect_to users_path
   end
