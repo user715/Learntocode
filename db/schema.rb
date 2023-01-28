@@ -10,11 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_26_180027) do
+ActiveRecord::Schema.define(version: 2023_01_27_182107) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.integer "problem_count", default: 0
+  end
+
+  create_table "problem_categories", force: :cascade do |t|
+    t.integer "problem_id"
+    t.integer "category_id"
   end
 
   create_table "problems", force: :cascade do |t|
@@ -26,6 +31,11 @@ ActiveRecord::Schema.define(version: 2023_01_26_180027) do
     t.text "sample_case_solutions"
     t.integer "likes", default: 0
     t.integer "tag_id"
+  end
+
+  create_table "solved_problems", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "problem_id"
   end
 
   create_table "tags", force: :cascade do |t|

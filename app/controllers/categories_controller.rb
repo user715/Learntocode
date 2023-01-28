@@ -35,6 +35,7 @@ class CategoriesController < ApplicationController
 
   def show
     @category = Category.find(params[:id])
+    @problems = @category.problems
   end
 
   private

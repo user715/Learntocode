@@ -8,5 +8,7 @@ Rails.application.routes.draw do
   resources :problems, only: [:new, :create, :show, :index, :destroy]
   resources :user_problem_likes, only: [:create]
   post 'like', to: 'users#toggle_like'
+  post 'solve', to: 'users#solve_problem'
+  # post 'problems/difficulty', to: 'problems#get_problems_by_difficulty'
   resources :categories
 end

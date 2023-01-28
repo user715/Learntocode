@@ -46,6 +46,14 @@
             { prompt: "Choose a tag : "}, { multiple: false, size: 3, class: "custom-select shadow rounded" }) %>
           </div>
       </div>
+
+      <div class="form-group row">
+        <%= f.label :category, class: "col-2 col-form-label text-light" %>
+          <div class="col-10"> 
+            <%= f.collection_select(:category_ids, Category.all, :id, :name,
+            { prompt: "Choose Categories : "}, { multiple: true, size: 10, class: "custom-select shadow rounded" }) %>
+          </div>
+      </div>
       
         <div class="form-group row justify-content-center">
           <%= f.submit class: "btn btn-outline-light btn-lg" %>

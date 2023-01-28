@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
 
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_action :require_user, only: [:edit, :update, :toggle_like]
+  before_action :require_user, only: [:edit, :update, :toggle_like, :solve_problem]
   before_action :require_same_user, only: [:edit, :update, :destroy]
 
   def show
-    @problems = @user.problems
+    @problems = @user.liked_problems
   end
 
   def index
@@ -40,7 +40,7 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    current_user.problems.each do |problem|
+    current_user.liked_problems.each do |problem|
       problem.likes -= 1
       problem.save
     end
@@ -52,15 +52,30 @@ class UsersController < ApplicationController
 
   def toggle_like
     @problem = Problem.find(params[:id])
-    if current_user.problems.exists?(@problem.id)
-      current_user.problems.delete(@problem)
+    if current_user.liked_problems.exists?(@problem.id)
+      current_user.liked_problems.delete(@problem)
       @problem.likes -= 1
     else
-      current_user.problems << @problem
+      current_user.liked_problems << @problem
       @problem.likes += 1
     end
     @problem.save
     redirect_to problems_path
+  end
+
+  def solve_problem
+    @problem = Problem.find(params[:problem_id])
+    if logged_in? && !current_user.problems_solved.exists?(@problem.id)
+      current_user.problems_solved << @problem
+      difficulty = Tag.find(@problem.tag_id)
+      if difficulty = "Easy"
+        current_user.easysolved += 1
+      elsif difficulty = "Medium"
+        current_user.mediumsolved += 1
+      else
+        current_user.difficultsolved += 1
+      end
+    end
   end
 
   private

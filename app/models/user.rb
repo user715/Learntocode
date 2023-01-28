@@ -1,7 +1,11 @@
 class User < ApplicationRecord
 
   has_many :user_problem_likes
-  has_many :problems, through: :user_problem_likes, dependent: :destroy
+  has_many :liked_problems, through: :user_problem_likes, source: :problem, dependent: :destroy
+
+  has_many :solved_problems
+  has_many :problems_solved, through: :solved_problems, source: :problem, dependent: :destroy
+
 
   before_save { self.email = email.downcase }
   validates :username, presence: true, uniqueness: { case_sensitive: false }, length: { minimum: 3, maximum: 25 }

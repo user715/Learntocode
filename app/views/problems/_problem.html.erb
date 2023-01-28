@@ -1,0 +1,88 @@
+<div class="container">
+  <div class = "row">
+    <div class="dropdown mb-4 mr-2">
+      <button class="btn dropdown-toggle btn-secondary" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+        Difficulty
+      </button>
+      <div class="dropdown-menu difficulty">
+        <% Tag.all.each do |tag|%>
+          <%= link_to tag.tagname, problems_path(difficulty: !params[:difficulty] || params[:difficulty]!=(tag.id).to_s ? tag.id : nil, categories: params[:categories], status: params[:status]), class: "dropdown-item" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="dropdown mb-4 mr-2">
+      <button class="btn dropdown-toggle btn-secondary" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+        Status
+      </button>
+      <div class="dropdown-menu difficulty">
+        <%= link_to "Solved", problems_path(difficulty: params[:difficulty], categories: params[:categories], status: !params[:status] || params[:status]!="solved" ? "solved" : nil), class: "dropdown-item" %>
+        <%= link_to "Todo", problems_path(difficulty: params[:difficulty], categories: params[:categories], status: !params[:status] || params[:status]!="todo" ? "todo" : nil), class: "dropdown-item" %>
+      </div>
+    </div>
+
+    <div class="dropdown mb-4">
+      <button class="btn dropdown-toggle btn-secondary" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+        Categories
+      </button>
+      <div class="dropdown-menu">
+        <% Category.all.each do |category|%>
+          <%= link_to category.name, problems_path(difficulty: params[:difficulty], status: params[:status], categories: 
+          
+          if params[:categories] 
+            if(params[:categories].include? (category.id).to_s)
+              params[:categories].select { |num| num.to_i != category.id }
+            else
+              [category.id]+params[:categories] 
+            end
+          else
+            [category.id.to_i]
+          end
+
+          ), class: "dropdown-item" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Status</th>
+        <th scope="col">Title</th>
+        <th scope="col">Difficulty</th>
+        <th scope="col">Categories</th>
+        <th scope="col">Likes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @problems.each do |problem| %>
+        <tr class="justify-content-center">
+          <td><%= problem.id %></td>
+          <% if logged_in? && current_user.problems_solved.exists?(problem.id) %>
+            <td><i class="fa fa-check-circle text-success"></i></td>
+          <% else %>
+            <td></td>
+          <% end %>
+          <td ><%= problem.title %></td>
+          <td ><%= problem.tag.tagname %></td>
+          <td class="row d-flex">
+              <% problem.categories.each do |category| %>
+                <div class="mr-2" ><%= link_to category.name, category_path(category), class: "badge badge-pill badge-info" %></div>
+              <% end %>
+          </td>
+          <td>
+            <%= problem.likes %>
+            <% if logged_in? && current_user.liked_problems.exists?(problem.id) %>
+              <%= link_to "", like_path(id: problem), method: :create, class: "fa fa-star text-decoration-none" %>
+            <% else %>
+              <%= link_to "", like_path(id: problem), method: :create, class: "fa fa-star-o text-decoration-none" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  
+</div>
