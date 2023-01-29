@@ -1,1 +1,15 @@
 @import 'bootstrap/dist/css/bootstrap';
+
+
+@media (min-width: 992px) {  
+  .dropdown-categories{
+    width: 400px;
+  }
+}
+
+.dropdown-item-p, .dropdown-item-p:hover{
+  text-decoration: none;
+  color: #212529;
+  margin-bottom: 6px;
+  margin-top: 6px;
+}
