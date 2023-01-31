@@ -1,107 +1,53 @@
-<div class="container mt-4">
-  <div class = "row">
-    <div class="dropdown mb-4 mr-2">
-      <button class="btn dropdown-toggle btn-secondary" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-        Difficulty
-      </button>
-      <div class="dropdown-menu shadow p-3 mb-5 bg-white rounded border border-white">
-        <% Tag.all.each do |tag|%>
-          <div class = "row"><%= link_to tag.tagname, problems_path(difficulty: !params[:difficulty] || params[:difficulty]!=(tag.id).to_s ? tag.id : nil, categories: params[:categories], status: params[:status]), class:"dropdown-item-p col-8" %>
-            <% if params[:difficulty]==(tag.id).to_s %>
-              <i class="col-3 align-self-center fa fa-check"></i>
-            <% end %>
-          </div>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="dropdown mb-4 mr-2">
-      <button class="btn dropdown-toggle btn-secondary" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-        Status
-      </button>
-      <div class="dropdown-menu shadow p-3 mb-5 bg-white rounded border border-white">
-        <div class = "row">
-          <i class="col-1 align-self-center fa fa-check-circle text-success"></i>
-          <%= link_to "Solved", problems_path(difficulty: params[:difficulty], categories: params[:categories], status: !params[:status] || params[:status]!="solved" ? "solved" : nil), class:"dropdown-item-p col-7 pl-2"%>
-          <% if params[:status]=="solved" %>
-              <i class="col-1 align-self-center fa fa-check pl-0"></i>
-          <% end %>
-        </div>
-        <div class = "row">
-          <i class="col-1 align-self-center fa fa-minus text-secondary"></i>
-          <%= link_to "Todo", problems_path(difficulty: params[:difficulty], categories: params[:categories], status: !params[:status] || params[:status]!="todo" ? "todo" : nil), class: "dropdown-item-p col-7 pl-2" %>
-          <% if params[:status]=="todo" %>
-              <i class="col-1 align-self-center fa fa-check pl-0"></i>
-          <% end %>
-        </div>
-      </div>
-    </div>
-
-    <div class="dropdown mb-4">
-      <button class="btn dropdown-toggle btn-secondary" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-        Categories
-      </button>
-      <div class="dropdown-menu dropdown-categories shadow p-3 mb-5 bg-white rounded border border-white">
-        <% Category.all.each do |category|%>
-        <div class = "d-inline-block mb-2 mr-2" >
-          <%= link_to category.name , problems_path(difficulty: params[:difficulty], status: params[:status], categories: 
-          
-          if params[:categories] 
-            if(params[:categories].include? (category.id).to_s)
-              params[:categories].select { |num| num.to_i != category.id }
-            else
-              [category.id]+params[:categories] 
-            end
-          else
-            [category.id.to_i]
-          end
-
-          ), class: (params[:categories] && (params[:categories].include? (category.id).to_s)) ? "badge badge-pill badge-primary" : "badge badge-pill border border-primary" %>
-          <small class="font-italic"><%= category.problems.count %></small>
-        </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
-
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Status</th>
-        <th scope="col">Title</th>
-        <th scope="col">Difficulty</th>
-        <th scope="col">Categories</th>
-        <th scope="col">Likes</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @problems.each do |problem| %>
-        <tr class="justify-content-center">
-          <td><%= problem.id %></td>
-          <% if logged_in? && current_user.problems_solved.exists?(problem.id) %>
-            <td><i class="fa fa-check-circle text-success"></i></td>
-          <% else %>
-            <td><i class="fa fa-minus text-secondary"></i></td>
-          <% end %>
-          <td ><%= problem.title %></td>
-          <td ><%= problem.tag.tagname %></td>
-          <td class="row d-flex">
-              <% problem.categories.each do |category| %>
-                <div class="mr-2" ><%= link_to category.name, category_path(category), class: "badge badge-pill badge-info" %></div>
-              <% end %>
-          </td>
-          <td>
-            <%= problem.likes %>
-            <% if logged_in? && current_user.liked_problems.exists?(problem.id) %>
-              <%= link_to "", like_path(id: problem), method: :create, class: "fa fa-star text-decoration-none" %>
-            <% else %>
-              <%= link_to "", like_path(id: problem), method: :create, class: "fa fa-star-o text-decoration-none" %>
-            <% end %>
-          </td>
-        </tr>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Status</th>
+      <th scope="col">Title</th>
+      <th scope="col">Difficulty</th>
+      <th scope="col">Categories</th>
+      <th scope="col">Likes</th>
+      <% if logged_in? && current_user.admin? %>
+      <th scope="col">Delete</th>
       <% end %>
-    </tbody>
-  </table>
-  
-</div>
+    </tr>
+  </thead>
+  <tbody>
+    <% @problems.each do |problem| %>
+      <tr class="justify-content-center">
+        <td><%= problem.id %></td>
+        <% if logged_in? && current_user.problems_solved.exists?(problem.id) %>
+          <td><i class="fa fa-check-circle text-success"></i></td>
+        <% else %>
+          <td><i class="fa fa-minus text-secondary"></i></td>
+        <% end %>
+        <td ><%= link_to problem.title, problem_path(problem),class: "text-decoration-none text-black problem-title" %></td>
+        <td class=
+        <% if problem.tag.tagname == "Easy"%>
+          <%= "text-success" %>
+        <% elsif problem.tag.tagname == "Medium"%>
+          <%= "text-warning" %>
+        <% else %>
+          <%= "text-danger" %>
+        <% end %>
+        ><%= problem.tag.tagname %></td>
+        <td class="row d-flex">
+            <% problem.categories.each do |category| %>
+              <div class="mr-2" ><%= link_to category.name, category_path(category), class: "badge badge-pill badge-info" %></div>
+            <% end %>
+        </td>
+        <td>
+          <%= problem.likes %>
+          <% if logged_in? && current_user.liked_problems.exists?(problem.id) %>
+            <%= link_to "", like_path(id: problem), method: :create, class: "fa fa-star text-decoration-none" %>
+          <% else %>
+            <%= link_to "", like_path(id: problem), method: :create, class: "fa fa-star-o text-decoration-none" %>
+          <% end %>
+        </td>
+        <td><%= link_to "", problem_path(problem), method: :delete, 
+        class: "fa fa-trash-o text-decoration-none text-danger" ,
+        data: { confirm: "Are you sure?" }%></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

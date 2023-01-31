@@ -13,4 +13,6 @@
  *= require bootstrap
  *= require_tree .
  *= require_self
+ *= require codemirror
+ *= require codemirror/themes/dracula
  */

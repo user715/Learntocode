@@ -1,2 +1,67 @@
-<h1><%= @problem.title %></h1>
-<%= link_to "DELETE", problem_path(@problem.id),method: :delete,  data: {confirm: "Are you sure?"}, class: "outline" %>
+
+<div class="container-fluid ide m-auto mt-4 d-flex row">
+  <div class="col-12 col-lg-4 problem-view">
+    <div class="row">
+      <h1><%= @problem.title %></h1>
+      <div class="ml-auto mr-4 align-self-center">
+         <p class="d-inline"><%= @problem.likes %></p>
+          <% if logged_in? && current_user.liked_problems.exists?(@problem.id) %>
+            <%= link_to "", like_path(id: @problem), method: :create, class: "fa fa-star text-white text-decoration-none" %>
+          <% else %>
+            <%= link_to "", like_path(id: @problem), method: :create, class: "fa fa-star-o text-white text-decoration-none" %>
+          <% end %>
+      </div>
+      <div class="mr-4 align-self-center">
+        <% if @problem.tag.tagname == "Easy"%>
+          <span class="badge badge-pill badge-success">Easy</span>
+        <% elsif @problem.tag.tagname == "Medium"%>
+          <span class="badge badge-pill badge-warning">Medium</span>
+        <% else %>
+          <span class="badge badge-pill badge-danger">Hard</span>
+        <% end %>
+      </div>
+    </div>
+    <p><%= @problem.description%></p>
+    <h4>Sample Cases</h4>
+    <p><%= @problem.sample_cases%></p>
+    <h4>Sample Cases</h4>
+    <p><%= @problem.sample_case_solutions%></p>
+  </div>
+  <div class="col-12 col-lg-8">
+    <%= form_with( url: "/submissions", class: "shadow p-4 rounded", remote: true) do |f| %>
+
+      <%= f.hidden_field :problem_id, value: @problem.id %>
+      <div class="form-group row">
+        <%= f.label :language, class: "col-form-label col-4 ml-auto text-right text-light" %>
+        <%= f.select(:compiler, Language.all.collect { |p| [ p.name ] }, {}, {:class=>"form-control col-4 ",:style=>""}) %>
+      </div>
+
+      <div class="form-group">
+        <div class="row"> 
+          <%= f.text_area :script, class: "col-12 form-control shadow rounded code-editor", placeholder: "Code Here",spellcheck: "false" %>
+        </div>
+      </div>  
+
+      <div class="form-group row">
+        <div class="col-12 col-lg-6 pr-4">
+          <%= f.label :TestCases, class: "row m-0 p-0 col-form-label " %>
+          <div class="row"> 
+            <%= f.text_area :testcases, class: "form-control shadow rounded col-12 code-editor io-editor",spellcheck: "false" %>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-6 pl-4">
+        <p class="m-0">Output :</p>
+          <div class="row"> 
+            <textarea readonly rows="3" spellcheck="false" class="shadow rounded col-12 code-editor io-editor" id="response"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row justify-content-center">
+        <%= f.submit "submit", class: "btn btn-outline-light btn-lg ml-auto" %>
+      </div>
+    <% end %>
+
+  </div>
+</div>

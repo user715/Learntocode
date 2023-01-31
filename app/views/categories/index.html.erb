@@ -2,6 +2,6 @@
 
 <div class="container row m-auto">
   <% @categories.each do |category| %>
-    <div class="col-3" ><%= link_to category.name, category_path(category), class: "badge badge-pill badge-info mr-1" %> # <%= category.problem_count%></div>
+    <div class="col-3" ><%= link_to category.name, category_path(category), class: "badge badge-pill badge-info mr-1" %> # <%= category.problems.count%></div>
   <% end %>
 </div>

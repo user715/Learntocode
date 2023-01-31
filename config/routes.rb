@@ -11,4 +11,5 @@ Rails.application.routes.draw do
   post 'solve', to: 'users#solve_problem'
   # post 'problems/difficulty', to: 'problems#get_problems_by_difficulty'
   resources :categories
+  post 'submissions', to: 'submissions#submit'
 end

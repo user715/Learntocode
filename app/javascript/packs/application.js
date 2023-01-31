@@ -17,3 +17,18 @@ require("channels")
 // const imagePath = (name) => images(name, true)
 
 import "bootstrap"
+
+// var p = document.querySelector("#editor");
+// var myCodeMirror = CodeMirror.fromTextArea(p,{
+// lineNumbers: true,
+// theme: "dracula",
+// mode: "cmake",
+// autoCloseTags: true,
+// autoCloseBrackets: true,
+// matchBrackets: true,
+// styleActiveLine: true
+// });
+
+
+
+

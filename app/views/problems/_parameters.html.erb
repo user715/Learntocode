@@ -1,0 +1,73 @@
+<div class = "row">
+  <div class="dropdown mb-4 mr-2">
+    <button class="btn dropdown-toggle btn-secondary" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+      Difficulty
+    </button>
+    <div class="dropdown-menu shadow p-3 mb-5 bg-white rounded border border-white">
+      <% Tag.all.each do |tag|%>
+        <div class = "row"><%= link_to tag.tagname, problems_path(difficulty: !params[:difficulty] || params[:difficulty]!=(tag.id).to_s ? tag.id : nil, categories: params[:categories], status: params[:status]),
+        class:
+          if tag.tagname == "Easy"
+            "text-success dropdown-item-p col-8" 
+          elsif tag.tagname == "Medium"
+            "text-warning dropdown-item-p col-8" 
+          else 
+            "text-danger dropdown-item-p col-8" 
+          end 
+        %>
+          <% if params[:difficulty]==(tag.id).to_s %>
+            <i class="col-3 align-self-center fa fa-check"></i>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="dropdown mb-4 mr-2">
+    <button class="btn dropdown-toggle btn-secondary" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+      Status
+    </button>
+    <div class="dropdown-menu shadow p-3 mb-5 bg-white rounded border border-white">
+      <div class = "row">
+        <i class="col-1 align-self-center fa fa-check-circle text-success"></i>
+        <%= link_to "Solved", problems_path(difficulty: params[:difficulty], categories: params[:categories], status: !params[:status] || params[:status]!="solved" ? "solved" : nil), class:"dropdown-item-p col-7 pl-2"%>
+        <% if params[:status]=="solved" %>
+            <i class="col-1 align-self-center fa fa-check pl-0"></i>
+        <% end %>
+      </div>
+      <div class = "row">
+        <i class="col-1 align-self-center fa fa-minus text-secondary"></i>
+        <%= link_to "Todo", problems_path(difficulty: params[:difficulty], categories: params[:categories], status: !params[:status] || params[:status]!="todo" ? "todo" : nil), class: "dropdown-item-p col-7 pl-2" %>
+        <% if params[:status]=="todo" %>
+            <i class="col-1 align-self-center fa fa-check pl-0"></i>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="dropdown mb-4">
+    <button class="btn dropdown-toggle btn-secondary" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+      Categories
+    </button>
+    <div class="dropdown-menu dropdown-categories shadow p-3 mb-5 bg-white rounded border border-white">
+      <% Category.all.each do |category|%>
+      <div class = "d-inline-block mb-2 mr-2" >
+        <%= link_to category.name , problems_path(difficulty: params[:difficulty], status: params[:status], categories: 
+        
+        if params[:categories] 
+          if(params[:categories].include? (category.id).to_s)
+            params[:categories].select { |num| num.to_i != category.id }
+          else
+            [category.id]+params[:categories] 
+          end
+        else
+          [category.id.to_i]
+        end
+
+        ), class: (params[:categories] && (params[:categories].include? (category.id).to_s)) ? "badge badge-pill badge-primary" : "badge badge-pill border border-primary" %>
+        <small class="font-italic"><%= category.problems.count %></small>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
