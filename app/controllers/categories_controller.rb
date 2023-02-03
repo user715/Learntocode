@@ -1,6 +1,6 @@
 class CategoriesController < ApplicationController
-  before_action :set_category, only: [:edit, :update, :show]
-  before_action :require_admin, except: [:index, :show]
+  before_action :set_category, only: [:edit, :update, :show, :destroy]
+  before_action :require_admin, except: [:index, :show, :destroy]
 
   def new
     @category = Category.new
@@ -10,7 +10,7 @@ class CategoriesController < ApplicationController
     @category = Category.new(category_params)
     if @category.save
       flash[:notice] = "Category was successfully created"
-      redirect_to @category
+      redirect_to categories_path
     else
       render 'new'
     end
@@ -34,6 +34,11 @@ class CategoriesController < ApplicationController
 
   def show
     @problems = @category.problems
+  end
+
+  def destroy
+    @category.destroy
+    redirect_to categories_path
   end
 
   private

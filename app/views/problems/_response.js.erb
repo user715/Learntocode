@@ -1,1 +1,5 @@
-document.querySelector("#response").innerHTML = '<%= j render 'problems/response.html' %>'
+document.querySelector("#response").innerHTML = '<%= j render 'problems/response.html'%>'
+document.querySelector(".custom_testcases").value = '<%= j @response[:testcases] %>'
+document.querySelector(".status_response").innerHTML = '<%= j render 'problems/status.html'%>'
+
+document.querySelector(".ide_submit_spinner").style.visibility = "hidden";

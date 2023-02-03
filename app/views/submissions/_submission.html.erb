@@ -1,0 +1,49 @@
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Difficulty</th>
+      <th scope="col">Categories</th>
+      <th scope="col">Language</th>
+      <th scope="col">Date</th>
+      <th scope="col">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% collection.each do |submission| %>
+    <% problem = Problem.find(submission.problem_id)%>
+      <tr class="justify-content-center">
+        <td >
+          <div class="zoom float-left">
+            <%= link_to problem.title, problem_path(id: problem.id,submission_id: submission.id),class: "text-decoration-none text-black problem-title" %>
+          </div>
+        </td>
+        <td class=
+          <% if problem.tag.tagname == "Easy"%>
+            <%= "text-success" %>
+          <% elsif problem.tag.tagname == "Medium"%>
+            <%= "text-warning" %>
+          <% else %>
+            <%= "text-danger" %>
+          <% end %>
+          ><%= problem.tag.tagname %>
+        </td>
+        <td class="row d-flex">
+            <% problem.categories.each do |category| %>
+              <div class="mr-2" ><span class="badge badge-pill badge-info"><%= category.name%></span> </div>
+            <% end %>
+        </td>
+        <td><%= submission.compiler %></td>
+        <td><%= submission.created_at %></td>
+        <td>
+          <% if submission.status == "All Testcases Passes"%>
+            <span class="text-success"><%= submission.status %></span>
+          <% else %>
+            <span class="text-danger"><%= submission.status %></span>
+          <% end %>
+        </td>
+        
+      </tr>
+    <% end %>
+  </tbody>
+</table>

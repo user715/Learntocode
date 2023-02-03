@@ -1,8 +1,8 @@
 class ProblemsController < ApplicationController
 
-  before_action :set_problem, only: [:show, :destroy]
-  before_action :require_user, only: [:new, :create, :destroy]
-  before_action :require_admin, only: [:new, :create, :destroy]
+  before_action :set_problem, only: [:show, :edit, :update, :destroy]
+  before_action :require_user, only: [:new, :create,:edit, :update, :destroy, :last_submission]
+  before_action :require_admin, only: [ :create, :edit, :update, :destroy]
 
   def index
     @problems = Problem.all
@@ -33,9 +33,20 @@ class ProblemsController < ApplicationController
   end
 
   def show
+    if params[:submission_id]
+      @submission = Submission.find(params[:submission_id]) 
+      if !(current_user.submissions.pluck(:problem_id).include? @submission.problem_id)
+        flash[:alert] = "You must solve a question to view others submissions"
+        redirect_to problems_path
+      end
+    end
   end
 
   def new
+    if !current_user.admin?
+      flash[:alert] = "only admin can create problems"
+      redirect_to problems_path
+    end
     @problem = Problem.new
   end
 
@@ -44,6 +55,7 @@ class ProblemsController < ApplicationController
     @problem.categories.each do |category|
       category.problem_count += 1;
     end
+    Tag.find(@problem.tag_id).problem_count += 1
     if @problem.save
       flash[:notice] = "Problem was created successfully."
       redirect_to @problem
@@ -52,10 +64,57 @@ class ProblemsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    @problem.categories.each do |category|
+      category.problem_count -= 1;
+      category.save
+    end
+
+    @problem.solved_users.each do |user|
+      if @problem.tag.tagname == "Easy"
+        user.easysolved -= 1
+      elsif @problem.tag.tagname == "Medium"
+        user.mediumSolved -= 1
+      else
+        user.difficultSolved -= 1
+      end
+      user.save
+    end
+    
+    @problem.solved_users.delete_all
+
+    if @problem.update(problem_params)
+      @problem.categories.each do |category|
+        category.problem_count += 1;
+        category.save
+      end
+      @problem.save
+      flash[:notice] = "Problem was upadted successfully."
+      redirect_to @problem
+    else
+      render 'edit'
+    end
+  end
+
   def destroy
     @problem.categories.each do |category|
       category.problem_count -= 1;
+      category.save
     end
+    @problem.solved_users.each do |user|
+      if @problem.tag.tagname == "Easy"
+        user.easysolved -= 1
+      elsif @problem.tag.tagname == "Medium"
+        user.mediumSolved -= 1
+      else
+        user.difficultSolved -= 1
+      end
+      user.save
+    end
+
     @problem.destroy
     flash[:notice] = "problem was successfully deleted"
     redirect_to problems_path
@@ -73,7 +132,7 @@ class ProblemsController < ApplicationController
 
   def require_admin
     if !current_user.admin?
-      flash[:alert] = "only admin can delete problems"
+      flash[:alert] = "only admin can perform that action"
       redirect_to @problem
     end
   end

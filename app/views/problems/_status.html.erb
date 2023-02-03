@@ -1,0 +1,5 @@
+<% if @response[:status] == "All Testcases Passes"%>
+  <span class="text-success"><%= @response[:status] %></span>
+<% else %>
+  <span class="text-danger"><%= @response[:status] %></span>
+<% end %>

@@ -5,3 +5,7 @@
     <div class="col-3" ><%= link_to category.name, category_path(category), class: "badge badge-pill badge-info mr-1" %> # <%= category.problems.count%></div>
   <% end %>
 </div>
+
+  <div class="row mt-4">
+    <%= link_to "new Category", new_category_path, class: "btn btn-primary m-auto"%>
+  </div>

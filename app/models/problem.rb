@@ -11,6 +11,8 @@ class Problem < ApplicationRecord
 
   belongs_to :tag
 
+  has_many :submissions, dependent: :destroy
+
   validates :title, presence: true, uniqueness: { case_sensitive: false }
   validates :description, presence: true
   validates :test_cases, presence: true

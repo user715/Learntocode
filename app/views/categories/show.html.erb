@@ -3,8 +3,10 @@
 <% if logged_in? && current_user.admin? %>
   <div class="text-center mt-4 mb-4">
     <%= link_to "Edit category name", edit_category_path(@category), class: "btn btn-outline-info" %>
+    <%= link_to "Delete category", category_path(@category), class: "btn btn-outline-danger", method: :delete,
+                data: {confirm: "Are you sure you want to delete the Category?"} %>
   </div>
 <% end %>
 <div class="container mt-4">
-  <%= render 'problems/problem' %>
+  <%= render 'problems/problem', collection: @problems %>
 </div>

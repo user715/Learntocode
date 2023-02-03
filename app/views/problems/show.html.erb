@@ -1,17 +1,29 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+  // $(document).on("ajax:success", "#last_submission", function(event, data, status, xhr) {
+  //     alert("Form submitted, thank you! " + data + " " + event + " " + status + " " + xhr);
+  //     console.log(data);
+  // });
+</script>
 
 <div class="container-fluid ide m-auto mt-4 d-flex row">
-  <div class="col-12 col-lg-4 problem-view">
-    <div class="row">
-      <h1><%= @problem.title %></h1>
-      <div class="ml-auto mr-4 align-self-center">
-         <p class="d-inline"><%= @problem.likes %></p>
-          <% if logged_in? && current_user.liked_problems.exists?(@problem.id) %>
-            <%= link_to "", like_path(id: @problem), method: :create, class: "fa fa-star text-white text-decoration-none" %>
-          <% else %>
-            <%= link_to "", like_path(id: @problem), method: :create, class: "fa fa-star-o text-white text-decoration-none" %>
-          <% end %>
+
+<% submission = Submission.find(params[:submission_id]) if params[:submission_id]%>
+
+  <div class="col-12 col-lg-4 problem-view ">
+    <h1><%= @problem.title %></h1>
+    <div class="row mb-2">
+      <div class="ml-3 align-self-center display_like">
+         <p class="d-inline display_like_count_<%= @problem.id %>"><%= @problem.likes %></p>
+         <div class="display_like_icon_<%= @problem.id %> d-inline">
+            <% if logged_in? && current_user.liked_problems.exists?(@problem.id) %>
+              <%= link_to "", like_path(id: @problem), remote: true, class: "fa fa-star text-decoration-none" %>
+            <% else %>
+              <%= link_to "", like_path(id: @problem), remote: true, class: "fa fa-star-o text-decoration-none" %>
+            <% end %>
+          </div>
       </div>
-      <div class="mr-4 align-self-center">
+      <div class="ml-4 align-self-center">
         <% if @problem.tag.tagname == "Easy"%>
           <span class="badge badge-pill badge-success">Easy</span>
         <% elsif @problem.tag.tagname == "Medium"%>
@@ -20,48 +32,95 @@
           <span class="badge badge-pill badge-danger">Hard</span>
         <% end %>
       </div>
+
+      <% if logged_in? && current_user.admin? %>
+      <div class=" row ml-auto" style="padding:0px 15px">
+        <div class="col p-0"><%= link_to "Edit", edit_problem_path(@problem), class: "btn btn-outline-info" %></div>
+        <div class="col"><%= link_to "Delete", problem_path(@problem), class: "btn btn-outline-danger", method: :delete,
+                data: {confirm: "Are you sure you want to delete the problem?"} %></div>
+      
+      </div>
+      <% end %>
+
     </div>
-    <p><%= @problem.description%></p>
-    <h4>Sample Cases</h4>
-    <p><%= @problem.sample_cases%></p>
-    <h4>Sample Cases</h4>
-    <p><%= @problem.sample_case_solutions%></p>
+    <div class="problem-view-body">
+      <p><%= simple_format(@problem.description) %></p>
+      <h4>Sample Input</h4>
+      <p><%= simple_format(@problem.sample_cases)%></p>
+      <h4>Output</h4>
+      <p><%= simple_format(@problem.sample_case_solutions)%></p>
+    </div>
   </div>
-  <div class="col-12 col-lg-8">
-    <%= form_with( url: "/submissions", class: "shadow p-4 rounded", remote: true) do |f| %>
+  <div class="col-12 col-lg-8  height_100 ide-form" >
+    <%= form_with( url: "/submissions", class: "shadow p-4 rounded height_100 d-flex flex-column", remote: true) do |f| %>
 
       <%= f.hidden_field :problem_id, value: @problem.id %>
       <div class="form-group row">
+        <% if logged_in? %>
+          <div class="d-flex">
+          <%= link_to last_submission_path(prob_id: @problem.id), class: "text-decoration-none align-self-end last_submission", id: "last_submission", remote: true do %>
+          <i class="fa fa-refresh text-white" aria-hidden="true"></i>
+          <span class=" pl-2 text-white">Retrieve last submitted code</span>
+          <% end %>
+          </div>
+        <% end %>
         <%= f.label :language, class: "col-form-label col-4 ml-auto text-right text-light" %>
-        <%= f.select(:compiler, Language.all.collect { |p| [ p.name ] }, {}, {:class=>"form-control col-4 ",:style=>""}) %>
+        <%= f.select(:compiler, Language.all.collect { |p| [ p.name ] }, {}, {:class=>"form-control col-4 language_select",:style=>""}) %>
       </div>
 
-      <div class="form-group">
-        <div class="row"> 
-          <%= f.text_area :script, class: "col-12 form-control shadow rounded code-editor", placeholder: "Code Here",spellcheck: "false" %>
+      <div class="form-group enter-code-div">
+        <div class="row "> 
+          <%= f.text_area :script, class: "col-12 form-control shadow rounded code-editor enter_code_ta problem_answer_#{@problem.id}", placeholder: "Code Here",spellcheck: "false" %>
         </div>
       </div>  
 
-      <div class="form-group row">
+      <div class="form-group row ">
         <div class="col-12 col-lg-6 pr-4">
-          <%= f.label :TestCases, class: "row m-0 p-0 col-form-label " %>
+          <%= f.label :TestCases, class: "row m-0 p-0 col-form-label text-white" %>
           <div class="row"> 
-            <%= f.text_area :testcases, class: "form-control shadow rounded col-12 code-editor io-editor",spellcheck: "false" %>
+            <%= f.text_area :testcases, class: "form-control shadow rounded col-12 code-editor io-editor custom_testcases",spellcheck: "false" %>
           </div>
         </div>
 
         <div class="col-12 col-lg-6 pl-4">
-        <p class="m-0">Output :</p>
+        <p class="m-0 text-white">Output :</p>
           <div class="row"> 
-            <textarea readonly rows="3" spellcheck="false" class="shadow rounded col-12 code-editor io-editor" id="response"></textarea>
+            <textarea rows="3" spellcheck="false" class="shadow rounded col-12 code-editor io-editor ide_output" id="response"></textarea>
           </div>
         </div>
       </div>
 
-      <div class="form-group row justify-content-center">
-        <%= f.submit "submit", class: "btn btn-outline-light btn-lg ml-auto" %>
+      <div class="form-group custom-control custom-switch">
+        <%= f.check_box :custom_cases, class: "custom-control-input", id: "customSwitch1"   %>
+        <label class="custom-control-label text-white" for="customSwitch1">Run custom testcases </label>
+      </div>
+
+      <div class="form-group row justify-content-center d-flex">
+        <p class="text-white pr-2 align-self-end mb-0">Status :</p>
+        <p class="text-white pl-2 align-self-end mb-0 status_response"></p>
+        <div class="spinner-border ml-auto align-self-center ide_submit_spinner" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <%= f.submit "submit", class: "btn btn-outline-light btn-lg ml-2", onclick: "show_spinner()" %>
       </div>
     <% end %>
 
   </div>
+  <script>
+   var offsetHeight = document.querySelector('.navbar').offsetHeight;
+   document.querySelector('.ide').style.top=offsetHeight + "px";
+
+  <% if submission %>
+    document.querySelector(".problem_answer_<%= submission.problem_id %>").value = '<%= j submission.script.html_safe %>';
+    document.querySelector(".language_select").value = '<%= j submission.compiler %>';
+  <%end%>
+
+  function show_spinner()
+  {
+    document.querySelector(".ide_submit_spinner").style.visibility = "visible";
+  }
+
+  document.querySelector(".enter_code_ta").rows = 100;
+  </script>
 </div>
+

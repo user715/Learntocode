@@ -1,1 +1,28 @@
-<h1>Home Page</h1>
+<div class="container" id="home-container">
+  <div class="jumbotron text-center text-white">
+    <h1 class="display-4">Learn To Code</h1>
+    <p class="lead">LearnToCode is the best platform to help you enhance your skills, expand your knowledge and prepare for technical interviews.</p>
+    <hr class="my-4">
+    <p>What are you waiting for? Enroll Now!</p>
+    <% if !logged_in? %>
+      <%= link_to "Sign up!", signup_path, class: "btn btn-success btn-lg" %>
+    <% else %>
+      <%= link_to "Practice", problems_path, class: "btn btn-success btn-lg" %>
+    <% end %>
+  </div>
+</div>
+
+<style>
+
+#home-container {
+  margin-top: 25px;
+}
+
+.jumbotron {
+  background-image: url('assets/image1.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 500px;
+}
+</style>

@@ -1,2 +1,4 @@
-<%= @response[:output] %>
-<%= @response %>
+<%= @response[:output].to_s %>
+<%= "\nMemory : "+@response[:memory].to_s+"\n" %>
+<%= "CPU Time : " +@response[:cpuTime].to_s+"\n" %>
+<%= "Correct Answer : " + @response[:solved].to_s %>
