@@ -6,11 +6,11 @@
   // });
 </script>
 
-<div class="container-fluid ide m-auto mt-4 d-flex row">
+<div class="container-fluid ide m-auto d-flex row">
 
 <% submission = Submission.find(params[:submission_id]) if params[:submission_id]%>
 
-  <div class="col-12 col-lg-4 problem-view ">
+  <div class="col-12 col-lg-4 problem-view m-0 d-flex flex-column py-5">
     <h1><%= @problem.title %></h1>
     <div class="row mb-2">
       <div class="ml-3 align-self-center display_like">
@@ -68,8 +68,8 @@
         <%= f.select(:compiler, Language.all.collect { |p| [ p.name ] }, {}, {:class=>"form-control col-4 language_select",:style=>""}) %>
       </div>
 
-      <div class="form-group enter-code-div">
-        <div class="row "> 
+      <div class="form-group height_100">
+        <div class="row height_100"> 
           <%= f.text_area :script, class: "col-12 form-control shadow rounded code-editor enter_code_ta problem_answer_#{@problem.id}", placeholder: "Code Here",spellcheck: "false" %>
         </div>
       </div>  
@@ -108,7 +108,7 @@
   </div>
   <script>
    var offsetHeight = document.querySelector('.navbar').offsetHeight;
-   document.querySelector('.ide').style.top=offsetHeight + "px";
+   document.querySelector('.ide').style.top=offsetHeight+20 + "px";
 
   <% if submission %>
     document.querySelector(".problem_answer_<%= submission.problem_id %>").value = '<%= j submission.script.html_safe %>';
@@ -120,7 +120,7 @@
     document.querySelector(".ide_submit_spinner").style.visibility = "visible";
   }
 
-  document.querySelector(".enter_code_ta").rows = 100;
+  
   </script>
 </div>
 

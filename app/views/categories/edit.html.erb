@@ -1,11 +1,11 @@
-<h1 class="text-center mt-4">Edit category name</h1>
+<h1 class="text-center mt-4">Edit tag name</h1>
 <div class="container">
-  <div class="row justify-content-center">
+  <div class="row col-12 justify-content-center">
     <div class="col-10">
-      <%= render 'form' %>
+      <%= render 'form', locals: {name: "Edit"} %>
     </div>
-    <div class="mb-3">
-      <%= link_to '[ Cancel and return to category ]', category_path(@category), class: "text-info" %>
+    <div class="row m-auto mb-3">
+      <%= link_to '[ Cancel and return to tag ]', category_path(@category), class: "text-info" %>
     </div>
   </div>
 </div>

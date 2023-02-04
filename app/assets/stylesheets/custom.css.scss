@@ -67,7 +67,7 @@ line-height:15px !important;
 font-weight:500 !important;
 margin: 0px 0px 0px 0px !important;
 padding: 0px 0px 0px 0px !important;
-resize: both !important;
+resize: none !important;
 color:#ffa !important;
 border:0px !important;
 border-radius: 0px !important;
@@ -89,8 +89,6 @@ font-size: 13px !important;
 font-feature-settings: "liga" 0, "calt" 0 !important;
 line-height: 18px !important;
 letter-spacing: 0px !important;
-width: 389px !important;
-height: 217px !important;
 }
 
 .code-editor::-webkit-scrollbar 
@@ -122,29 +120,32 @@ height: 217px !important;
   resize: none !important;
 }
 
+@media (min-width: 1400px) {  
+  .io-editor{
+    height: 150px !important;
+    resize: none !important;
+  }
+}
+
 
 .ide{
-  background-color:rgba(0,0,0,0.90);
   position: absolute;
     bottom: 0;
     width: 100%; 
 }
 
 .height_100{
-  height:100%;
+  height:100% !important;
 }
-
-// .enter-code-div{
-//   flex-grow : 1;
-//   flex-shrink: 0;
-// }
 
 .enter-code-ta{
   resize: none !important;
 }
 
 .problem-view-body{
-  height: 600px;
+  flex-shrink: 0;
+  flex-grow: 1;
+  height: 300px;
   overflow-y: auto;
 }
 
@@ -192,10 +193,6 @@ height: 217px !important;
 }
 
 
-tr:hover {
-  background-color: rgb(206, 204, 204) !important;
-}
-
 .ide_submit_spinner{
   visibility:hidden;
   width: 2rem; 
@@ -216,8 +213,8 @@ tr:hover {
 
 $borderWidth: 5px;
 $animationTime: .5s;
-$border-color-default: #bbbbbb;
-$border-color-fill: #ffb43e;
+$border-color-default: rgba(155, 155, 155, 0.507);
+$border-color-fill: #FFC107;
 $size: 70px;
 $howManySteps: 100; //this needs to be even. 
 
@@ -346,3 +343,49 @@ Due to the split circle of progress-left and progress right, we must use the ani
 	}
 }
 
+p, h1, h2, h3, h4, h5, h6{
+  color: white;
+}
+
+.bg-dark{
+  background-color: #222 !important;
+}
+
+body{
+  background-color:rgba(0,0,0,0.90);
+}
+
+tr:hover {
+  background-color: #ffffff10 !important;
+}
+
+tr:nth-child(2n+1) {
+  background-color: #272727;
+}
+tr:nth-child(even) {
+  background-color: #272727;
+}
+
+th{
+  background-color: #222;
+}
+
+.bg-progressbar{
+  background-color:rgba(155, 155, 155, 0.507);
+}
+
+form textarea, form input, form select, form input:hover{
+  background-color: rgba(43, 43, 43, 0.658) !important;
+  border:0px !important;
+  border-radius: 0px !important;
+  outline: none !important;
+  color: white !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 50px rgb(43, 43, 43) inset !important;
+    -webkit-text-fill-color: white !important;
+}

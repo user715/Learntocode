@@ -35,7 +35,7 @@ class ProblemsController < ApplicationController
   def show
     if params[:submission_id]
       @submission = Submission.find(params[:submission_id]) 
-      if !(current_user.submissions.pluck(:problem_id).include? @submission.problem_id)
+      if !current_user || !(current_user.submissions.pluck(:problem_id).include? @submission.problem_id)
         flash[:alert] = "You must solve a question to view others submissions"
         redirect_to problems_path
       end

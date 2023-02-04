@@ -1,11 +1,14 @@
-<h1 class="text-center mt-4">Categories</h1>
+<h1 class="text-center mt-4">Tags</h1>
 
 <div class="container row m-auto">
   <% @categories.each do |category| %>
-    <div class="col-3" ><%= link_to category.name, category_path(category), class: "badge badge-pill badge-info mr-1" %> # <%= category.problems.count%></div>
+    <div class="col-3" ><%= link_to category.name, category_path(category), class: "badge badge-pill badge-secondary " %> <span class="text-white"># <%= category.problems.count%></span></div>
   <% end %>
+
+  <div class="mx-auto mt-4">
+    <%= link_to "new Tag", new_category_path, class: "btn btn-success m-auto"%>
+  </div>
+
 </div>
 
-  <div class="row mt-4">
-    <%= link_to "new Category", new_category_path, class: "btn btn-primary m-auto"%>
-  </div>
+

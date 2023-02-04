@@ -2,7 +2,7 @@
 document.querySelector(".display_like_count_<%= @problem.id %>").innerHTML = '<%= @problem.likes %>'
 
 <% if logged_in? && current_user.liked_problems.exists?(@problem.id) %>
-  document.querySelector(".display_like_icon_<%= @problem.id %>").innerHTML = '<%= link_to "", like_path(id: @problem), remote: true, class: "fa fa-star text-decoration-none" %>'
+  document.querySelector(".display_like_icon_<%= @problem.id %>").innerHTML = '<%= link_to "", like_path(id: @problem), remote: true, class: "fa fa-star text-decoration-none text-warning" %>'
 <% else %>
-  document.querySelector(".display_like_icon_<%= @problem.id %>").innerHTML = '<%= link_to "", like_path(id: @problem), remote: true, class: "fa fa-star-o text-decoration-none" %>'
+  document.querySelector(".display_like_icon_<%= @problem.id %>").innerHTML = '<%= link_to "", like_path(id: @problem), remote: true, class: "fa fa-star-o text-decoration-none text-secondary" %>'
 <% end %>

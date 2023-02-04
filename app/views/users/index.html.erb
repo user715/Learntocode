@@ -1,37 +1,31 @@
-<h3 class="text-center m-4">All Users</h3>
-<table class="container mt-4 table table-striped">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Easy</th>
-      <th scope="col">Medium</th>
-      <th scope="col">Hard</th>
-      <% if logged_in?%>
-            <th scope="col" >Action</th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <% @users.each do |user| %>
-      <tr class="justify-content-center">
-        <td><%= link_to user.username,user_path(user.id)%></td>
-        <td><%= user.email %></td>
-        <td><%= user.easysolved %></td>
-        <td><%= user.mediumSolved %></td>
-        <td><%= user.difficultSolved %></td>
-        <% if logged_in? %>
-            <td>
-              <% if user == current_user%>
-                <%= link_to "Edit profile", edit_user_path(user), class: "btn btn-outline-info" %>
-              <% end %>
-              <% if user == current_user || current_user.admin?%>
-                <%= link_to "Delete user", user_path(user), class: "btn btn-outline-danger", method: :delete,
-                data: {confirm: "Are you sure you want to delete the user account?"} %>
-              <% end %>
-            </td>
-        <% end %>
+<h3 class="text-center m-4 text-white">Leader Board</h3>
+<div class="container my-4 py-4 bg-dark">
+  <table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">Rank</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Easy</th>
+        <th scope="col">Medium</th>
+        <th scope="col">Hard</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <tr class="justify-content-center">
+          <td>1</td>
+          <td>
+            <div class="zoom float-left">
+              <%= link_to user.username,user_path(user.id), class: "text-white text-decoration-none"%></td>
+            </div>
+          <td><%= user.email %></td>
+          <td><%= user.easysolved %></td>
+          <td><%= user.mediumSolved %></td>
+          <td><%= user.difficultSolved %></td>
+          
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

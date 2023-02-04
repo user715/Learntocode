@@ -1,10 +1,9 @@
-<table class="table">
-  <thead class="thead thead-dark">
-      <th scope="col">Id</th>
-      <th scope="col">Status</th>
+<table class="table table-dark ">
+  <thead class="thead">
+      <th scope="col" class="text-center">Status</th>
       <th scope="col">Title</th>
       <th scope="col">Difficulty</th>
-      <th scope="col">Categories</th>
+      <th scope="col">Tags</th>
       <th scope="col">Likes</th>
       <% if logged_in? && current_user.admin? %>
         <th scope="col">Delete</th>
@@ -13,15 +12,14 @@
   <tbody>
     <% collection.each do |problem| %>
       <tr class="justify-content-center">
-        <td><%= problem.id %></td>
         <% if logged_in? && current_user.problems_solved.exists?(problem.id) %>
-          <td><i class="fa fa-check-circle text-success"></i></td>
+          <td class="text-center"><i class="fa fa-check-circle text-success"></i></td>
         <% else %>
-          <td><i class="fa fa-minus text-secondary"></i></td>
+          <td class="text-center"><i class="fa fa-minus text-secondary"></i></td>
         <% end %>
         <td >
           <div class="zoom float-left">
-            <%= link_to problem.title, problem_path(problem),class: "text-decoration-none text-black problem-title" %>
+            <%= link_to problem.title, problem_path(problem),class: "text-decoration-none text-white problem-title" %>
           </div>
         </td>
         <td class=
@@ -35,16 +33,16 @@
         ><%= problem.tag.tagname %></td>
         <td class="row d-flex">
             <% problem.categories.each do |category| %>
-              <div class="mr-2 mt-0" ><span class="badge badge-pill badge-info"><%= category.name%></span> </div>
+              <div class="mr-2 mt-0" ><span class="badge badge-pill badge-secondary"><%= category.name%></span> </div>
             <% end %>
         </td>
         <td class="display_like">
           <p class="d-inline display_like_count_<%= problem.id %> "><%= problem.likes %></p>
          <div class="display_like_icon_<%= problem.id %> d-inline">
             <% if logged_in? && current_user.liked_problems.exists?(problem.id) %>
-              <%= link_to "", like_path(id: problem), remote: true, class: "fa fa-star text-decoration-none " %>
+              <%= link_to "", like_path(id: problem), remote: true, class: "fa fa-star text-decoration-none text-warning" %>
             <% elsif logged_in? %>
-              <%= link_to "", like_path(id: problem), remote: true, class: "fa fa-star-o text-decoration-none" %>
+              <%= link_to "", like_path(id: problem), remote: true, class: "fa fa-star-o text-decoration-none text-secondary" %>
             <% end %>
           </div>
         </td>
