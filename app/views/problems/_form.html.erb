@@ -45,21 +45,53 @@
             { prompt: "Choose a difficulty : "}, { multiple: false, size: 3, class: "custom-select shadow rounded" }) %>
           </div>
       </div>
-
       <div class="form-group row">
         <%= f.label :Tags, class: "col-2 col-form-label text-light" %>
-          <div class="col-10"> 
+          <div class="col-10 tags_select"> 
             <%= f.collection_select(:category_ids, Category.all, :id, :name,
             { prompt: "Choose Tags : "}, { multiple: true, size: 10, class: "custom-select shadow rounded" }) %>
           </div>
       </div>
-      
-        <div class="form-group row justify-content-center">
-          <%= f.submit class: "btn btn-outline-light btn-lg" %>
+      <div class="row ml-auto">
+        <div class="col-2"></div>
+        <p id="create_new_tag" class="mb-0 ml-1 align-self-end">
+        
+        <i class="fa fa-plus-circle text-white align-self-center" aria-hidden="true"></i> Create new tag</p>
+        <div class="new_tag_form" style="display:none;">
+          <div class="col">
+            <input type="text" id="new_tag_text">
+            <%= link_to "new Tag", '#', class: "text-white m-auto", id: "new_tag" %>
+          </div>
         </div>
-      <% end %>
-    </div>
-    <div class="text-center mb-3">
-      <%= link_to '[ Cancel and return to problems listing ]', problems_path, class: "text-info" %>
-    </div>
+      </div>
+      <div class="form-group row justify-content-center mt-4">
+        <%= f.submit class: "btn btn-outline-light btn-lg bg-success" %>
+      </div>
+    <% end %>
+  </div>
 </div>    
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  document.getElementById('new_tag').addEventListener("click", create_tag);
+  document.getElementById('create_new_tag').addEventListener("click", display_new_tag_form);
+
+  function display_new_tag_form(){
+    console.log("click");
+    document.querySelector('.new_tag_form').style.display = "block";
+  }
+
+  function create_tag(event){
+    name = document.getElementById('new_tag_text').value;
+    event.preventDefault();
+    $.ajax({
+      url: '/categories',
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      type: 'post',
+      data: {'name': name},
+      success: function(result,status,xhr) {
+        
+      }
+    });
+  }
+</script>

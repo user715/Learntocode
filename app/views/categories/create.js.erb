@@ -1,0 +1,3 @@
+document.querySelector("#problem_category_ids").innerHTML = ' <%= j render 'problems/tags.html' %>';
+$('.flash_wrapper').html("<%= j render 'layouts/messages.html' %>");
+document.querySelector('.new_tag_form').style.display = "none";

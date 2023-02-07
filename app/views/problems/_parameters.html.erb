@@ -65,19 +65,24 @@
         end
 
         ), class: (params[:categories] && (params[:categories].include? (category.id).to_s)) ? "badge badge-pill badge-primary" : "badge badge-pill badge-dark" %>
-        <small class="font-italic"><%= category.problems.count %></small>
+        <small class="font-italic text-muted"><%= category.problems.count %></small>
       </div>
       <% end %>
     </div>
   </div>
 
+  <div class="ml-auto mb-4 rounded d-flex mx-3">
+    <i class="fa fa-refresh text-white m-auto pl-2" aria-hidden="true"></i>
+    <%= link_to "Reset filters", problems_path(), class:"text-white px-2  m-auto"%>
+  </div>
+
   <% if logged_in? && current_user.admin?%>
-  <div class="ml-auto">
+  <div class="">
     <a href="<%= new_problem_path %>" class="add-new-problem btn btn-dark ">
       <i class="fa fa-plus-circle fa-lg text-success " 
       style="text-shadow:0 0 30px #999;"
       aria-hidden="true"></i>
-      <span >new </span>
+      <span >New </span>
     </a>
   </div>
   <% end %>

@@ -35,9 +35,9 @@ class ProblemsController < ApplicationController
   def show
     if params[:submission_id]
       @submission = Submission.find(params[:submission_id]) 
-      if !current_user || !(current_user.submissions.pluck(:problem_id).include? @submission.problem_id)
+      if !current_user || (!current_user.admin? && !(current_user.problems_solved.pluck(:problem_id).include? @submission.problem_id))
         flash[:alert] = "You must solve a question to view others submissions"
-        redirect_to problems_path
+        redirect_back fallback_location: root_path
       end
     end
   end
@@ -72,25 +72,50 @@ class ProblemsController < ApplicationController
       category.problem_count -= 1;
       category.save
     end
-
     @problem.solved_users.each do |user|
+      @problem.solved_users.delete(user)
       if @problem.tag.tagname == "Easy"
         user.easysolved -= 1
+        user.score -= 10
       elsif @problem.tag.tagname == "Medium"
         user.mediumSolved -= 1
+        user.score -= 20
       else
         user.difficultSolved -= 1
+        user.score -= 30
       end
       user.save
     end
     
-    @problem.solved_users.delete_all
-
     if @problem.update(problem_params)
-      @problem.categories.each do |category|
-        category.problem_count += 1;
-        category.save
-      end
+      t = Thread.new {
+        @problem.categories.each do |category|
+          category.problem_count += 1;
+          category.save
+        end
+        @problem.submissions.each do |submission|
+          @submission = submission
+          check_submission
+        end
+        User.all.each do |user|
+          if !user.submissions.select{|s| s.problem_id==@problem.id && s.status=="All Testcases Passes"}.empty?
+            # byebug
+            @problem.solved_users << user
+            if @problem.tag.tagname == "Easy"
+              user.easysolved += 1
+              user.score += 10
+            elsif @problem.tag.tagname == "Medium"
+              user.mediumSolved += 1
+              user.score += 20
+            else
+              user.difficultSolved += 1
+              user.score += 30
+            end
+            user.save
+          end
+        end
+        sort_leaderboard
+      }
       @problem.save
       flash[:notice] = "Problem was upadted successfully."
       redirect_to @problem
@@ -107,10 +132,13 @@ class ProblemsController < ApplicationController
     @problem.solved_users.each do |user|
       if @problem.tag.tagname == "Easy"
         user.easysolved -= 1
+        user.score -= 10
       elsif @problem.tag.tagname == "Medium"
         user.mediumSolved -= 1
+        user.score -= 20
       else
         user.difficultSolved -= 1
+        user.score -= 30
       end
       user.save
     end
@@ -123,7 +151,12 @@ class ProblemsController < ApplicationController
   private
 
   def set_problem
-    @problem = Problem.find(params[:id])
+    if !Problem.exists?(params[:id])
+      flash[:alert] = "Problem not found"
+      redirect_to problems_path
+    else
+      @problem = Problem.find(params[:id])
+    end
   end
 
   def problem_params
@@ -137,5 +170,51 @@ class ProblemsController < ApplicationController
     end
   end
 
+  def check_submission
+    problem = Problem.find(@submission.problem_id)
+    user = User.find(@submission.user_id)
+    language = @submission.language
+    versionIndex = @submission.versionIndex
+    script = @submission.script
+    testcases = problem.test_cases
 
-end
+    testcases.chomp!
+    testcases.gsub! "\t",' '
+    testcases.gsub! "\n",' '
+    testcases.gsub! "\r",' '
+    testcases = testcases.squeeze(" ")
+    testcases = testcases.strip
+
+    # API - testcases response
+    @response = Problem.execute(script, language, versionIndex,testcases)
+
+      solution = problem.test_case_solutions
+      s1 = String.new(solution)
+      s2 = String.new(@response[:output])
+      s1.chomp!
+      s2.chomp!
+      s1.gsub! "\t",' '
+      s1.gsub! "\n",' '
+      s1.gsub! "\r",' '
+      s2.gsub! "\t",' ' 
+      s2.gsub! "\n",' '
+      s2.gsub! "\r",' '
+      s1 = s1.squeeze(" ")
+      s2 = s2.squeeze(" ")
+      s1 = s1.strip
+      s2 = s2.strip
+      if s1 == s2
+        @submission.status = "All Testcases Passes"
+      else
+        @submission.status = "Wrong Answer"
+      end
+      @submission.save
+      problem.save
+    end
+
+    if @response
+      respond_to do |f|
+        f.js {render partial: 'problems/response'}
+      end
+    end
+  end

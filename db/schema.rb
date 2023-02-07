@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_02_125726) do
+ActiveRecord::Schema.define(version: 2023_02_06_075404) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
@@ -75,6 +75,8 @@ ActiveRecord::Schema.define(version: 2023_02_02_125726) do
     t.integer "mediumSolved", default: 0
     t.integer "difficultSolved", default: 0
     t.string "password_digest"
+    t.integer "rank"
+    t.integer "score"
   end
 
 end

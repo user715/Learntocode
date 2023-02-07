@@ -1,5 +1,10 @@
-document.querySelector("#response").innerHTML = '<%= j render 'problems/response.html'%>'
-document.querySelector(".custom_testcases").value = '<%= j @response[:testcases] %>'
-document.querySelector(".status_response").innerHTML = '<%= j render 'problems/status.html'%>'
+
+<% if !@problem %>
+  $('.flash_wrapper').html("<%= j render 'layouts/messages.html' %>");
+<% else %>
+  document.querySelector("#response").innerHTML = '<%= j render 'problems/response.html'%>'
+  document.querySelector(".custom_testcases").value = '<%= j @response[:testcases] %>'
+  document.querySelector(".status_response").innerHTML = '<%= j render 'problems/status.html'%>'
+<% end %>
 
 document.querySelector(".ide_submit_spinner").style.visibility = "hidden";

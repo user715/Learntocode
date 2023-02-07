@@ -20,8 +20,19 @@
           <%= f.password_field :password, class: "form-control shadow rounded", placeholder: "Choose a password" %>
         </div>
       </div>
+      <% if logged_in? %>
+        <div class="form-group row">
+          <% if !@user.admin? %>
+          <%= f.label :Delete_account, class: "col-2 col-form-label text-light" %>
+          <div class="col-10"> 
+            <%= link_to "Delete", user_path(@user), class: "btn btn-outline-danger", method: :delete,
+              data: {confirm: "Are you sure you want to delete the user account?"} %>
+          </div>
+          <% end %>
+        </div>
+      <% end %>
       <div class="form-group row justify-content-center">
-        <%= f.submit(@user.new_record? ? "sign up" : "Update accout", class: "btn btn-outline-light btn-lg") %>
+        <%= f.submit(@user.new_record? ? "sign up" : "Update account", class: "btn btn-outline-light btn-lg ") %>
       </div>
     <% end %>
   </div>

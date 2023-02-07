@@ -14,7 +14,9 @@
 
   <body>
     <%=render 'layouts/navigation' %>
-    <%=render 'layouts/messages' %>
+    <div class="flash_wrapper">
+      <%=render 'layouts/messages' %>
+    </div>
     <%= yield %>
   </body>
 </html>

@@ -1,10 +1,15 @@
 <%# debugger; %>
-<% if @submission %>
-  document.querySelector(".problem_answer_<%= @submission.problem_id %>").value = '<%= j @submission.script.html_safe %>';
-  document.querySelector(".language_select").value = '<%= j @submission.compiler %>';
-<% else %>
-  alert("you have 0 submissions for this problem");
-<% end %>
 
-document.querySelector("#response").innerHTML = ""
-document.querySelector(".custom_testcases").value = ""
+<% if !@problem %>
+  $('.flash_wrapper').html("<%= j render 'layouts/messages.html' %>");
+<% else %>
+  <% if @submission %>
+    document.querySelector(".problem_answer_<%= @submission.problem_id %>").value = '<%= j @submission.script.html_safe %>';
+    document.querySelector(".language_select").value = '<%= j @submission.compiler %>';
+  <% else %>
+    $('.flash_wrapper').html("<%= j render 'layouts/messages.html' %>");
+  <% end %>
+
+  document.querySelector("#response").innerHTML = ""
+  document.querySelector(".custom_testcases").value = ""
+<% end %>

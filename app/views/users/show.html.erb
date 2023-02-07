@@ -1,16 +1,23 @@
-<div class="container-fluid row mt-4">
-
+<div class="container-fluid m-0">
+<div class="content row bg-dark">
 <div class="col-12 col-lg-3">
 
   <div class="pl-3 col-12 p-0">
-    <div class="profile col-12 bg-dark shadow p-3 mb-3 rounded">
+    <div class="profile col-12 bg-darkl shadow p-3 mb-3 rounded">
       <%= gravatar_for @user, size: 160, class: "card-img-top m-auto col-12" %>
-      <h5 class="col-12 text-center"><%= @user.username %></h5>
-
+      <h5 class="col-12 text-center"><%= @user.username %></h5> 
+      <% if !@user.admin? %>
+        <p>Rank : <%= @user.rank %></p>
+        <p>Score : <%= @user.score %></p>
+      <% end %>
       <div class="col-12 mt-4 mr-0">
         <% if logged_in? %>
           <% if @user == current_user%>
             <%= link_to "Edit profile", edit_user_path(@user), class: "btn btn-outline-info col-12" %>
+          <% end %>
+          <% if @user != current_user && current_user.admin?%>
+            <%= link_to "Delete user", user_path(@user), class: "btn btn-outline-danger col-12", method: :delete,
+            data: {confirm: "Are you sure you want to delete the user account?"} %>
           <% end %>
         <% end %>
       </div>
@@ -18,26 +25,26 @@
   </div>
 
   <div class="pl-3 col-12 p-0 m-0">
-    <div class="profile_problems_solved col-12 bg-dark pb-3 shadow mb-5 rounded">
-      <p class="row m-auto pt-2 pb-1 text-center">Problems Solved : </p>
-      <div class="row col-12 pt-2 d-flex justify-content-around p-0 m-0">
-
-        <div class="container align-self-start pt-4 pr-0 t col-12 col-lg-4">
-          <div class="progress" data-percentage= <%= (@user.problems_solved.count*100)/Problem.all.count%>>
-            <span class="progress-left">
-              <span class="progress-bar"></span>
-            </span>
-            <span class="progress-right">
-              <span class="progress-bar"></span>
-            </span>
-            <div class="progress-value">
-              <div class="text-white">
-                <%= (@user.problems_solved.count*100)/Problem.all.count%>%<br>
-              </div>
+    <div class="profile_problems_solved col-12 bg-darkl pb-3 shadow mb-5 rounded">
+      <p class="row m-auto pt-2 pb-1 text-center">Problems Solved : 
+      <%= @user.problems_solved.count %>/<%= Problem.all.count %></p>
+      <div class="pt-4 px-0 t col-12">
+        <div class="progress" data-percentage= <%= (@user.problems_solved.count*100)/Problem.all.count%>>
+          <span class="progress-left">
+            <span class="progress-bar"></span>
+          </span>
+          <span class="progress-right">
+            <span class="progress-bar"></span>
+          </span>
+          <div class="progress-value">
+            <div class="text-white">
+              <%= (@user.problems_solved.count*100)/Problem.all.count%>%<br>
             </div>
           </div>
         </div>
-        <div class="col-8">
+      </div>
+      <div class="row col-12 pt-2 d-flex justify-content-around p-0 m-0">
+        <div class="col-12">
           <div>
             <span class="text-white">Easy</span>
             <span class="float-right text-white"><%= @user.easysolved %> / <%= Tag.find("1").problems.count %> </span> 
@@ -70,14 +77,14 @@
 
 </div>
 
-  <div class="col-12 col-lg-9 container bg-dark shadow p-3 mb-5 rounded">
+  <div class="col-12 col-lg-9 container bg-darkl shadow p-3 mb-5 rounded">
     <div class="col-12 mt-4 ">
       <h4 class="text-center mb-3">Recent Submissions</h4>
       <%= render 'submissions/submission', collection: @user.submissions.reverse %>
     </div>
   </div>
 
-
+</div>
 </div>
 
 

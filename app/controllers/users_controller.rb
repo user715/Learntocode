@@ -5,11 +5,13 @@ class UsersController < ApplicationController
   before_action :require_same_user, only: [:edit, :update, :destroy]
 
   def show
-    @problems = @user.liked_problems
+    
   end
 
   def index
     @users = User.all
+    sort_leaderboard
+    @users = @users.sort_by { |user| user.rank }
   end
 
   def new
@@ -18,8 +20,11 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @user.rank = User.all.count + 1
+    @user.score = 0
     if @user.save
       session[:user_id] = @user.id
+      sort_leaderboard
       flash[:notice] = "Welcome to Learntocode #{@user.username}, you have successfully sign up"
       redirect_to users_path
     else
@@ -40,14 +45,20 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user.liked_problems.each do |problem|
-      problem.likes -= 1
-      problem.save
+    if @user.admin?
+      flash[:alert] = "Admin account cant be deleted"
+      redirect_to problems_path
+    else
+      @user.liked_problems.each do |problem|
+        problem.likes -= 1
+        problem.save
+      end
+      session[:user_id] = nil if @user == current_user
+      @user.destroy
+      sort_leaderboard
+      flash[:notice] = "Account was successfully deleted"
+      redirect_to problems_path
     end
-    session[:user_id] = nil if @user == current_user
-    @user.destroy
-    flash[:notice] = "Account was successfully deleted"
-    redirect_to problems_path
   end
 
   def toggle_like
@@ -63,21 +74,6 @@ class UsersController < ApplicationController
     # redirect_to problems_path
   end
 
-  # def solve_problem
-  #   @problem = Problem.find(params[:problem_id])
-  #   if logged_in? && !current_user.problems_solved.exists?(@problem.id)
-  #     current_user.problems_solved << @problem
-  #     difficulty = Tag.find(@problem.tag_id)
-  #     if difficulty = "Easy"
-  #       current_user.easysolved += 1
-  #     elsif difficulty = "Medium"
-  #       current_user.mediumsolved += 1
-  #     else
-  #       current_user.difficultsolved += 1
-  #     end
-  #   end
-  # end
-
   private
 
   def user_params
@@ -85,7 +81,13 @@ class UsersController < ApplicationController
   end
 
   def set_user
-    @user = User.find(params[:id])
+    # byebug
+    if !User.exists?(params[:id])
+      flash[:alert] = "Profile not found"
+      redirect_to users_path
+    else
+      @user = User.find(params[:id])
+    end
   end
 
   def require_same_user
@@ -94,5 +96,6 @@ class UsersController < ApplicationController
       redirect_to @user
     end
   end
+
 
 end

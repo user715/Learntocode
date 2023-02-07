@@ -1,0 +1,4 @@
+<option value="">Choose Tags:</option>
+<% @categories.each do |tag|%>
+  <option value="<%= tag.id %>"><%= tag.name %></option>
+<%end%>
