@@ -7,15 +7,24 @@ class CategoriesController < ApplicationController
   end
 
   def create
-    @category = Category.new
-    byebug
-    @category.name = params[:name]
-    if @category.save
-      flash.now[:notice] = "Category was successfully created"
+    if !params[:name]
+      @category = Category.new(category_params)
+      if @category.save
+        flash[:notice] = "Category was successfully created"
+      else
+        flash[:alert] = "Category already exists"
+      end
+      redirect_to categories_path
     else
-      flash.now[:alert] = "Category already exists"
+      @category = Category.new
+      @category.name = params[:name]
+      if @category.save
+        flash.now[:notice] = "Category was successfully created"
+      else
+        flash.now[:alert] = "Category already exists"
+      end
+      @categories = Category.all
     end
-    @categories = Category.all
   end
 
   def edit
